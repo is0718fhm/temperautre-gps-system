@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>水温計測システム</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<!-- Leaflet 地図 -->
+<link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}">
+<script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>水温計測システム</h1>
+
+
+    <div class="card">
+
+        <div class="row">
+            <span class="label">現在時刻</span>
+            <span class="value" id="current-time">--</span>
+        </div>
+
+        <div class="row">
+            <span class="label">計測状態</span>
+            <span class="value" id="running-state">--</span>
+        </div>
+
+        <div class="row">
+            <span class="label">状態メッセージ</span>
+            <span class="value" id="message">--</span>
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h2>GPS</h2>
+
+        <div class="row">
+            <span class="label">GPS状態</span>
+            <span class="value" id="gps-fix">--</span>
+        </div>
+
+        <div class="row">
+            <span class="label">緯度</span>
+            <span class="value" id="latitude">--</span>
+        </div>
+
+        <div class="row">
+            <span class="label">経度</span>
+            <span class="value" id="longitude">--</span>
+        </div>
+
+    </div>
+
+
+
+    <!-- 地図追加 -->
+
+    <div class="card">
+
+        <h2>地図</h2>
+
+        <div id="map"></div>
+
+    </div>
+
+
+
+    <!-- 有線LAN接続時のみ表示される地図データカード -->
+    <div class="card" id="map-download-card" style="display:none;">
+        <h2>地図データ</h2>
+        <div class="row">
+            <span class="label">状態</span>
+            <span class="value" id="map-download-message">待機中</span>
+        </div>
+        <div class="row">
+            <span class="label">進捗</span>
+            <span class="value" id="map-download-progress">--</span>
+        </div>
+        <div class="row">
+            <span class="label">合計容量</span>
+            <span class="value" id="map-total-size">--</span>
+        </div>
+        <input
+            type="text"
+            id="map-name-input"
+            class="file-select"
+            placeholder="地図の名前(例: 〇〇池)">
+        <div class="button-card" style="margin-top:10px;">
+            <button id="map-download-btn" class="btn save">保存</button>
+            <button id="map-cancel-btn" class="btn stop" disabled>キャンセル</button>
+        </div>
+        <div id="map-region-list" style="margin-top:14px;"></div>
+    </div>
+
+
+    <div class="card">
+
+        <h2>水温</h2>
+
+        <div
+            class="temperature-display"
+            id="temperature">
+            -- ℃
+        </div>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <div class="row">
+            <span class="label">取得件数</span>
+            <span class="value" id="records">--</span>
+        </div>
+
+        <div class="row">
+            <span class="label">保存ファイル名</span>
+            <span class="value" id="filename">--</span>
+        </div>
+
+    </div>
+
+
+
+    <div class="card button-card">
+
+        <button
+            id="start-btn"
+            class="btn start">
+            開始
+        </button>
+
+
+        <button
+            id="stop-btn"
+            class="btn stop">
+            終了
+        </button>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <h2>記録ファイル</h2>
+
+
+        <select
+            id="file-select"
+            class="file-select">
+        </select>
+
+
+        <button
+            id="save-btn"
+            class="btn save">
+            保存
+        </button>
+
+    </div>
+
+
+
+    <div class="card">
+
+        <span class="label">
+            通信状態
+        </span>
+
+        <span
+            class="value"
+            id="connection-status">
+            --
+        </span>
+
+    </div>
+
+
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+</body>
+
+</html>
