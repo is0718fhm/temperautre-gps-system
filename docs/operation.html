@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>使用方法 | 水温・GPS計測システム</title>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<h1>使用方法</h1>
+
+<p>電源投入から計測開始まで</p>
+
+</header>
+
+
+<nav>
+
+<a href="index.html">ホーム</a>
+<a href="hardware.html">ハードウェア</a>
+<a href="operation.html">使用方法</a>
+<a href="web.html">Web画面</a>
+<a href="csv.html">CSVデータ</a>
+<a href="caution.html">注意事項</a>
+
+</nav>
+
+
+<main>
+
+<section>
+
+<h2>使用手順</h2>
+
+<ol>
+
+<li>キットを設置する</li>
+
+<li>電源を接続する</li>
+
+<li>スマートフォンをWi-Fiへ接続する</li>
+
+<li>Webページを開く</li>
+
+<li>GPS測位を確認する</li>
+
+<li>計測を開始する</li>
+
+</ol>
+
+</section>
+
+
+
+<section>
+
+<h2>① キットを設置する</h2>
+
+<p>
+
+平らで安定した場所へキットを設置してください。
+
+GPSアンテナはできるだけ空が開けた方向へ向け、水温センサを測定対象の水中へ入れます。
+
+</p>
+
+<div class="image-group">
+
+<figure>
+
+<img src="images/setup1.jpg" alt="設置">
+
+<figcaption>図1　キットの設置</figcaption>
+
+</figure>
+
+<figure>
+
+<img src="images/setup2.jpg" alt="GPS">
+
+<figcaption>図2　GPSアンテナの向き</figcaption>
+
+</figure>
+
+<figure>
+
+<img src="images/setup3.jpg" alt="水温センサ">
+
+<figcaption>図3　水温センサの設置</figcaption>
+
+</figure>
+
+</div>
+
+</section>
+
+
+
+<section>
+
+<h2>② 電源を接続する</h2>
+
+<p>
+
+モバイルバッテリーを Raspberry Pi に接続してください。
+
+接続後、自動でシステムが起動します。
+
+起動完了まで約1分お待ちください。
+
+</p>
+
+<figure>
+
+<img src="images/power.jpg" alt="電源接続">
+
+<figcaption>
+
+図4　電源の接続
+
+</figcaption>
+
+</figure>
+
+</section>
+
+
+
+<section>
+
+<h2>③ スマートフォンをWi-Fiへ接続する</h2>
+
+<p>
+
+スマートフォンのWi-Fi設定から、使用するキットのアクセスポイントへ接続してください。
+
+</p>
+
+<table>
+
+<tr>
+
+<th>キット</th>
+
+<th>SSID</th>
+
+<th>パスワード</th>
+
+</tr>
+
+<tr>
+
+<td>キット1</td>
+
+<td>boat_kit1</td>
+
+<td>boat_kit3151</td>
+
+</tr>
+
+<tr>
+
+<td>キット2</td>
+
+<td>boat_kit2</td>
+
+<td>boat_kit3152</td>
+
+</tr>
+
+<tr>
+
+<td>キット3</td>
+
+<td>boat_kit3</td>
+
+<td>boat_kit3153</td>
+
+</tr>
+
+</table>
+
+<figure>
+
+<img src="images/wifi.jpg" alt="Wi-Fi接続">
+
+<figcaption>
+
+図5　Wi-Fi接続画面
+
+</figcaption>
+
+</figure>
+
+</section>
+
+
+
+<section>
+
+<h2>④ Webページを開く</h2>
+
+<p>
+
+Wi-Fi接続後、ブラウザを開き、以下のアドレスへアクセスしてください。
+
+</p>
+
+<code>
+
+http://raspberrypi.local:5000
+
+</code>
+
+<p>
+
+アクセスできない場合は、各キットのQRコードからアクセスしてください。
+
+</p>
+
+<div class="image-group">
+
+<figure>
+
+<img src="images/qr1.png" alt="QR1">
+
+<figcaption>キット1</figcaption>
+
+</figure>
+
+<figure>
+
+<img src="images/qr2.png" alt="QR2">
+
+<figcaption>キット2</figcaption>
+
+</figure>
+
+<figure>
+
+<img src="images/qr3.png" alt="QR3">
+
+<figcaption>キット3</figcaption>
+
+</figure>
+
+</div>
+
+</section>
+
+
+
+<section>
+
+<h2>⑤ GPS測位を確認する</h2>
+
+<p>
+
+Web画面に「GPS取得済み」と表示されることを確認してください。
+
+初回起動時は測位まで数分かかる場合があります。
+
+GPS取得前に計測を開始すると、正しい位置情報が記録されない場合があります。
+
+</p>
+
+<figure>
+
+<img src="images/gps_fix.png" alt="GPS取得">
+
+<figcaption>
+
+図6　GPS取得状態
+
+</figcaption>
+
+</figure>
+
+</section>
+
+
+
+<section>
+
+<h2>⑥ 計測を開始する</h2>
+
+<p>
+
+GPS取得後、「計測開始」ボタンを押してください。
+
+計測中は1秒ごとに水温および位置情報が記録されます。
+
+</p>
+
+<figure>
+
+<img src="images/start.png" alt="開始ボタン">
+
+<figcaption>
+
+図7　計測開始ボタン
+
+</figcaption>
+
+</figure>
+
+</section>
+
+
+
+<section>
+
+<h2>計測終了後</h2>
+
+<p>
+
+計測終了後は「計測停止」を押し、CSVデータをダウンロードしてください。
+
+詳しい操作方法は「Web画面」のページを参照してください。
+
+</p>
+
+<p>
+
+<a class="button" href="web.html">
+
+Web画面の説明へ →
+
+</a>
+
+</p>
+
+</section>
+
+</main>
+
+
+<footer>
+
+<p>
+
+Temperature GPS System
+
+</p>
+
+</footer>
+
+</body>
+
+</html>
