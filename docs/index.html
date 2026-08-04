@@ -6,393 +6,270 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>
-水温・GPS計測システム 取扱説明書
-</title>
+<title>水温・GPS計測システム 取扱説明書</title>
 
 <link rel="stylesheet" href="style.css">
 
 </head>
 
-
 <body>
-
 
 <header>
 
-<h1>
-水温・GPS計測システム
-</h1>
+<h1>水温・GPS計測システム</h1>
 
-<p>
-取扱説明書
-</p>
+<p>利用者向け取扱説明書</p>
 
 </header>
 
 
+<nav>
+
+<a href="index.html">ホーム</a>
+
+<a href="hardware.html">ハードウェア</a>
+
+<a href="operation.html">使用方法</a>
+
+<a href="web.html">Web画面</a>
+
+<a href="csv.html">CSVデータ</a>
+
+<a href="caution.html">注意事項</a>
+
+</nav>
+
 
 <main>
 
+<section>
+
+<h2>ようこそ</h2>
+
+<p>
+
+本システムは Raspberry Pi を用いて水温および位置情報を取得する計測システムです。
+
+取得したデータはスマートフォンからリアルタイムで確認でき、CSVファイルとして保存することができます。
+
+</p>
+
+</section>
+
 
 <section>
 
-<h2>1. システム概要</h2>
+<h2>システム概要</h2>
 
+<figure>
+
+<img src="images/system.jpg" alt="システム全体">
+
+<figcaption>
+
+図1　システム全体
+
+</figcaption>
+
+</figure>
 
 <p>
-本システムは、Raspberry Piを用いて水温と位置情報を計測する装置です。
+
+本システムは次の機器で構成されています。
+
 </p>
-
-
-<p>
-取得したデータは、スマートフォンからWebブラウザで確認することができます。
-</p>
-
-
-<h3>主な機能</h3>
 
 <ul>
 
-<li>水温のリアルタイム計測</li>
+<li>Raspberry Pi</li>
 
-<li>GPSによる位置情報取得</li>
+<li>GPSモジュール</li>
 
-<li>スマートフォンからの操作</li>
+<li>DS18B20水温センサ</li>
 
-<li>計測データのCSV保存</li>
+<li>モバイルバッテリー</li>
+
+<li>スマートフォン（操作用）</li>
 
 </ul>
 
-
 </section>
-
-
-
 
 
 <section>
 
-<h2>2. ハードウェア構成</h2>
+<h2>この説明書で分かること</h2>
+
+<div class="menu-grid">
+
+<a class="menu-card" href="hardware.html">
+
+<h3>ハードウェア</h3>
+
+<p>
+
+装置の名称や各部品の役割を説明します。
+
+</p>
+
+</a>
 
 
-<table>
+<a class="menu-card" href="operation.html">
+
+<h3>使用方法</h3>
+
+<p>
+
+電源投入から計測開始までの手順を説明します。
+
+</p>
+
+</a>
 
 
-<tr>
+<a class="menu-card" href="web.html">
 
-<th>
-部品
-</th>
+<h3>Web画面</h3>
 
-<th>
-役割
-</th>
+<p>
 
-</tr>
+スマートフォンからアクセスする画面の見方と操作方法を説明します。
 
+</p>
 
-<tr>
-
-<td>
-Raspberry Pi
-</td>
-
-<td>
-システム制御
-</td>
-
-</tr>
+</a>
 
 
-<tr>
+<a class="menu-card" href="csv.html">
 
-<td>
-DS18B20
-</td>
+<h3>CSVデータ</h3>
 
-<td>
-水温測定
-</td>
+<p>
 
-</tr>
+保存されるデータやダウンロード方法を説明します。
 
+</p>
 
-<tr>
-
-<td>
-GPSモジュール
-</td>
-
-<td>
-位置情報取得
-</td>
-
-</tr>
+</a>
 
 
-<tr>
+<a class="menu-card" href="caution.html">
 
-<td>
-バッテリー
-</td>
+<h3>注意事項</h3>
 
-<td>
-電源供給
-</td>
+<p>
 
-</tr>
+安全に使用するための注意点やトラブル対処法を説明します。
 
+</p>
 
-</table>
+</a>
 
-
-<!-- 後で装置写真を追加 -->
-
+</div>
 
 </section>
 
 
-
-
-
-
 <section>
 
-<h2>3. 使用方法</h2>
+<h2>利用の流れ</h2>
 
+<ol>
 
-<h3>① 電源を入れる</h3>
+<li>キットを設置する</li>
 
-<p>
-本体へ電源を接続し、Raspberry Piを起動します。
-</p>
+<li>電源を接続する</li>
 
+<li>スマートフォンをWi-Fiへ接続する</li>
 
+<li>Webページへアクセスする</li>
 
-<h3>② スマートフォンを接続する</h3>
+<li>計測開始ボタンを押す</li>
 
-<p>
-スマートフォンのWi-Fi設定から、本システムのアクセスポイントへ接続してください。
-</p>
+<li>計測終了後にCSVを保存する</li>
 
-
-
-<h3>③ Webページを開く</h3>
-
-<p>
-ブラウザで以下へアクセスしてください。
-</p>
-
-
-<code>
-http://raspberrypi.local:5000
-</code>
-
+</ol>
 
 </section>
 
 
-
-
-
-
 <section>
 
-<h2>4. Web画面操作</h2>
-
-
-<h3>表示内容</h3>
-
-
-<ul>
-
-<li>現在時刻</li>
-
-<li>水温</li>
-
-<li>緯度・経度</li>
-
-<li>GPS測位状態</li>
-
-</ul>
-
-
-
-<h3>計測開始</h3>
-
-<p>
-開始ボタンを押すと、データ保存を開始します。
-</p>
-
-
-
-<h3>計測停止</h3>
-
-<p>
-停止ボタンを押すと、データ保存を終了します。
-</p>
-
-
-
-<h3>CSV保存</h3>
-
-<p>
-計測結果はCSVファイルとして保存できます。
-</p>
-
-
-</section>
-
-
-
-
-
-
-<section>
-
-<h2>5. CSVデータについて</h2>
-
+<h2>ページ一覧</h2>
 
 <table>
 
 <tr>
 
-<th>
-項目
-</th>
+<th>ページ</th>
 
-<th>
-内容
-</th>
+<th>内容</th>
 
 </tr>
-
 
 <tr>
 
-<td>
-time
-</td>
+<td>ハードウェア</td>
 
-<td>
-計測時刻
-</td>
+<td>各部品の名称・役割・接続位置</td>
 
 </tr>
-
 
 <tr>
 
-<td>
-temperature
-</td>
+<td>使用方法</td>
 
-<td>
-水温(℃)
-</td>
+<td>電源投入から計測開始まで</td>
 
 </tr>
-
 
 <tr>
 
-<td>
-latitude
-</td>
+<td>Web画面</td>
 
-<td>
-緯度
-</td>
+<td>画面の見方・各ボタンの説明</td>
 
 </tr>
-
 
 <tr>
 
-<td>
-longitude
-</td>
+<td>CSVデータ</td>
 
-<td>
-経度
-</td>
+<td>保存されるデータとダウンロード方法</td>
 
 </tr>
-
 
 <tr>
 
-<td>
-fix
-</td>
+<td>注意事項</td>
 
-<td>
-GPS測位状態
-</td>
+<td>安全に使用するための注意点</td>
 
 </tr>
-
 
 </table>
 
-
 </section>
-
-
-
-
-
-
-
-<section>
-
-<h2>6. 注意事項</h2>
-
-
-<ul>
-
-<li>
-GPS取得には時間がかかる場合があります
-</li>
-
-
-<li>
-GPSは屋外で使用してください
-</li>
-
-
-<li>
-水温センサの接続部は防水してください
-</li>
-
-
-<li>
-使用後は電源を切ってください
-</li>
-
-
-</ul>
-
-
-</section>
-
-
 
 </main>
-
-
 
 
 <footer>
 
 <p>
+
 Temperature GPS System
+
+</p>
+
+<p>
+
+Version 1.0
+
 </p>
 
 </footer>
-
-
 
 </body>
 
