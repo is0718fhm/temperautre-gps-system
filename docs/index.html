@@ -2,11 +2,12 @@
 <html lang="ja">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>
-水温・GPS計測システム 説明書
+水温・GPS計測システム 取扱説明書
 </title>
 
 <link rel="stylesheet" href="style.css">
@@ -24,42 +25,28 @@
 </h1>
 
 <p>
-Raspberry Piを用いた水温・位置情報取得システム
+取扱説明書
 </p>
 
 </header>
 
 
 
-<nav>
-
-<a href="#overview">概要</a>
-<a href="#hardware">ハードウェア</a>
-<a href="#setup">セットアップ</a>
-<a href="#operation">使用方法</a>
-<a href="#csv">CSVデータ</a>
-<a href="#trouble">トラブル</a>
-
-</nav>
+<main>
 
 
-
-
-<section id="overview">
+<section>
 
 <h2>1. システム概要</h2>
 
 
 <p>
-本システムはRaspberry Piを中心として、
-水温センサ（DS18B20）とGPSモジュールを用いて、
-水温および位置情報をリアルタイム取得する計測装置です。
+本システムは、Raspberry Piを用いて水温と位置情報を計測する装置です。
 </p>
 
 
 <p>
-取得したデータはRaspberry Pi上のWebサーバで表示でき、
-スマートフォンやPCからアクセスポイント経由で確認できます。
+取得したデータは、スマートフォンからWebブラウザで確認することができます。
 </p>
 
 
@@ -69,15 +56,11 @@ Raspberry Piを用いた水温・位置情報取得システム
 
 <li>水温のリアルタイム計測</li>
 
-<li>GPSによる緯度・経度取得</li>
+<li>GPSによる位置情報取得</li>
 
-<li>現在位置の表示</li>
+<li>スマートフォンからの操作</li>
 
 <li>計測データのCSV保存</li>
-
-<li>スマートフォンから操作可能</li>
-
-<li>電源投入時の自動起動</li>
 
 </ul>
 
@@ -88,104 +71,83 @@ Raspberry Piを用いた水温・位置情報取得システム
 
 
 
-<section id="hardware">
-
+<section>
 
 <h2>2. ハードウェア構成</h2>
 
 
 <table>
 
+
 <tr>
-<th>部品</th>
-<th>内容</th>
+
+<th>
+部品
+</th>
+
+<th>
+役割
+</th>
+
 </tr>
 
 
 <tr>
-<td>Raspberry Pi</td>
-<td>制御用コンピュータ</td>
+
+<td>
+Raspberry Pi
+</td>
+
+<td>
+システム制御
+</td>
+
 </tr>
 
 
 <tr>
-<td>DS18B20</td>
-<td>防水型温度センサ</td>
+
+<td>
+DS18B20
+</td>
+
+<td>
+水温測定
+</td>
+
 </tr>
 
 
 <tr>
-<td>GPSモジュール</td>
-<td>緯度・経度・時刻取得</td>
+
+<td>
+GPSモジュール
+</td>
+
+<td>
+位置情報取得
+</td>
+
 </tr>
 
 
 <tr>
-<td>モバイルバッテリー</td>
-<td>電源供給</td>
+
+<td>
+バッテリー
+</td>
+
+<td>
+電源供給
+</td>
+
 </tr>
 
 
 </table>
 
 
-</section>
-
-
-
-
-
-<section id="setup">
-
-
-<h2>3. 初期設定</h2>
-
-
-<h3>Python環境</h3>
-
-
-<pre>
-python3 -m venv env
-
-source env/bin/activate
-
-pip install flask
-pip install pynmea2
-pip install pyserial
-</pre>
-
-
-
-<h3>センサ設定</h3>
-
-<p>
-DS18B20を1-Wire通信で接続します。
-</p>
-
-
-<pre>
-
-sudo nano /boot/firmware/config.txt
-
-dtoverlay=w1-gpio
-
-</pre>
-
-
-
-<h3>GPS接続確認</h3>
-
-
-<pre>
-
-ls /dev/serial*
-
-</pre>
-
-
-GPSは
-<code>/dev/serial0</code>
-を使用します。
+<!-- 後で装置写真を追加 -->
 
 
 </section>
@@ -195,40 +157,37 @@ GPSは
 
 
 
-<section id="operation">
+<section>
+
+<h2>3. 使用方法</h2>
 
 
-<h2>4. 使用方法</h2>
-
-
-<h3>起動</h3>
-
-
-<pre>
-
-sudo systemctl start boat-monitor
-
-</pre>
-
-
-<h3>Web画面表示</h3>
-
+<h3>① 電源を入れる</h3>
 
 <p>
-
-スマートフォンをRaspberry PiのWi-Fiへ接続後、
-
+本体へ電源を接続し、Raspberry Piを起動します。
 </p>
 
 
-<pre>
 
+<h3>② スマートフォンを接続する</h3>
+
+<p>
+スマートフォンのWi-Fi設定から、本システムのアクセスポイントへ接続してください。
+</p>
+
+
+
+<h3>③ Webページを開く</h3>
+
+<p>
+ブラウザで以下へアクセスしてください。
+</p>
+
+
+<code>
 http://raspberrypi.local:5000
-
-</pre>
-
-
-へアクセスします。
+</code>
 
 
 </section>
@@ -238,53 +197,140 @@ http://raspberrypi.local:5000
 
 
 
-<section id="csv">
+<section>
+
+<h2>4. Web画面操作</h2>
 
 
-<h2>5. CSVデータ</h2>
+<h3>表示内容</h3>
 
+
+<ul>
+
+<li>現在時刻</li>
+
+<li>水温</li>
+
+<li>緯度・経度</li>
+
+<li>GPS測位状態</li>
+
+</ul>
+
+
+
+<h3>計測開始</h3>
 
 <p>
-計測データはrecordsフォルダ内に保存されます。
+開始ボタンを押すと、データ保存を開始します。
 </p>
+
+
+
+<h3>計測停止</h3>
+
+<p>
+停止ボタンを押すと、データ保存を終了します。
+</p>
+
+
+
+<h3>CSV保存</h3>
+
+<p>
+計測結果はCSVファイルとして保存できます。
+</p>
+
+
+</section>
+
+
+
+
+
+
+<section>
+
+<h2>5. CSVデータについて</h2>
 
 
 <table>
 
-
 <tr>
-<th>項目</th>
-<th>内容</th>
+
+<th>
+項目
+</th>
+
+<th>
+内容
+</th>
+
 </tr>
 
 
 <tr>
-<td>time</td>
-<td>計測時刻</td>
+
+<td>
+time
+</td>
+
+<td>
+計測時刻
+</td>
+
 </tr>
 
 
 <tr>
-<td>temperature</td>
-<td>水温(℃)</td>
+
+<td>
+temperature
+</td>
+
+<td>
+水温(℃)
+</td>
+
 </tr>
 
 
 <tr>
-<td>latitude</td>
-<td>緯度</td>
+
+<td>
+latitude
+</td>
+
+<td>
+緯度
+</td>
+
 </tr>
 
 
 <tr>
-<td>longitude</td>
-<td>経度</td>
+
+<td>
+longitude
+</td>
+
+<td>
+経度
+</td>
+
 </tr>
 
 
 <tr>
-<td>fix</td>
-<td>GPS測位状態</td>
+
+<td>
+fix
+</td>
+
+<td>
+GPS測位状態
+</td>
+
 </tr>
 
 
@@ -298,49 +344,42 @@ http://raspberrypi.local:5000
 
 
 
-<section id="trouble">
 
+<section>
 
-<h2>6. トラブルシューティング</h2>
-
-
-<h3>GPSが取得できない</h3>
+<h2>6. 注意事項</h2>
 
 
 <ul>
 
-<li>アンテナを屋外へ向ける</li>
+<li>
+GPS取得には時間がかかる場合があります
+</li>
 
-<li>/dev/serial0が存在するか確認</li>
 
-<li>GPS Fixまで数分待つ</li>
+<li>
+GPSは屋外で使用してください
+</li>
+
+
+<li>
+水温センサの接続部は防水してください
+</li>
+
+
+<li>
+使用後は電源を切ってください
+</li>
+
 
 </ul>
-
-
-
-<h3>温度が取得できない</h3>
-
-
-<ul>
-
-<li>DS18B20の配線確認</li>
-
-<li>w1モジュール確認</li>
-
-</ul>
-
-
-
-<pre>
-
-ls /sys/bus/w1/devices/
-
-</pre>
-
 
 
 </section>
+
+
+
+</main>
 
 
 
@@ -352,6 +391,7 @@ Temperature GPS System
 </p>
 
 </footer>
+
 
 
 </body>
