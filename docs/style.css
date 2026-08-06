@@ -54,6 +54,9 @@ header p{
 
 }
 
+.menu-toggle{
+    display:none;
+}
 
 /* ===========================
    ナビゲーション
@@ -372,44 +375,42 @@ footer{
 
 @media (max-width:700px){
 
-header h1{
+    nav{
+        display:block;
+        padding:0;
+    }
 
-    font-size:28px;
+    main{
+        padding:20px 10px;
+    }
 
-}
+    section{
+        padding:20px;
+    }
 
-nav{
-
-    flex-direction:column;
-
-}
-
-main{
-
-    padding:20px 10px;
-
-}
-
-section{
-
-    padding:20px;
-
-}
 }
 
 @media (max-width:768px){
 
     .menu-toggle{
         display:block;
+        width:100%;
+        background:#ffffff;
+        color:#0d6efd;
+        border:none;
+        padding:15px;
+        font-size:18px;
+        font-weight:bold;
+        cursor:pointer;
     }
 
     .nav-links{
         display:none;
-        flex-direction:column;
     }
 
     .nav-links.show{
         display:flex;
+        flex-direction:column;
     }
 
     .nav-links a{
