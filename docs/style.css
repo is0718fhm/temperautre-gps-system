@@ -397,18 +397,25 @@ section{
 }
 }
 
-/* スマートフォン向け */
-@media (max-width: 768px) {
+@media (max-width:768px){
 
-    nav{
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px;
+    .menu-toggle{
+        display:block;
     }
 
-    nav a{
-        padding: 6px 10px;
-        font-size: 14px;
+    .nav-links{
+        display:none;
+        flex-direction:column;
+    }
+
+    .nav-links.show{
+        display:flex;
+    }
+
+    .nav-links a{
+        display:block;
+        padding:12px;
+        border-top:1px solid #ddd;
     }
 
 }
