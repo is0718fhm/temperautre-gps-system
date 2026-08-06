@@ -29,6 +29,7 @@ CSV_HEADER = [
     "gps_fix"
 ]
 
+MAX_RECORD_BYTES = 5 * 1024 * 1024 * 1024   # 5GB
 
 os.makedirs(RECORDS_DIR, exist_ok=True)
 
@@ -222,6 +223,77 @@ def stop_measurement():
 
 
 # -------------------------------
+# CSV容量管理
+# -------------------------------
+
+def get_records_size():
+
+    total = 0
+
+    for name in os.listdir(RECORDS_DIR):
+
+        path = os.path.join(
+            RECORDS_DIR,
+            name
+        )
+
+        if os.path.isfile(path):
+
+            try:
+
+                total += os.path.getsize(path)
+
+            except OSError:
+
+                pass
+
+    return total
+
+
+
+def cleanup_old_records():
+
+    while get_records_size() > MAX_RECORD_BYTES:
+
+        files = [
+
+            os.path.join(
+                RECORDS_DIR,
+                f
+            )
+
+            for f in os.listdir(RECORDS_DIR)
+
+            if f.lower().endswith(".csv")
+
+        ]
+
+        if not files:
+
+            return
+
+        oldest = min(
+            files,
+            key=os.path.getmtime
+        )
+
+        logger.info(
+            "古いCSV削除: %s",
+            os.path.basename(oldest)
+        )
+
+        try:
+
+            os.remove(oldest)
+
+        except OSError:
+
+            return
+
+
+
+
+# -------------------------------
 # CSV保存
 # -------------------------------
 
@@ -275,6 +347,9 @@ def write_record(
 
 
             csv_file.flush()
+
+
+            cleanup_old_records()
 
 
             record_count += 1
@@ -435,13 +510,13 @@ os.makedirs(MAPS_ROOT, exist_ok=True)
 
 META_PATH = os.path.join(BASE_DIR, "static", "maps", "meta.json")
 
-TILE_SERVER_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+TILE_SERVER_URL = "https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=yE7emn8SqomLrQBssukX"
 TILE_REQUEST_HEADERS = {"User-Agent": "negi-boat-offline-map/1.0 (research use)"}
 
 MIN_DOWNLOAD_ZOOM = 13
 MAX_DOWNLOAD_ZOOM = 18
 
-MAX_TOTAL_BYTES = 5 * 1024 * 1024 * 1024  # 5GB上限
+MAX_TOTAL_BYTES = 40 * 1024 * 1024 * 1024  # 40GB上限
 
 maps_lock = threading.Lock()
 
@@ -504,6 +579,7 @@ def is_wired_connection():
                 pass
     return False
 
+
 def deg2num(lat_deg, lon_deg, zoom):
     lat_rad = math.radians(lat_deg)
     n = 2.0 ** zoom
@@ -546,8 +622,7 @@ def serve_tile(z, x, y):
     abort(404)
 
 
-def download_tiles_worker(region_id, name, tasks, bbox):
-
+def download_tiles_worker(region_id, name, tasks, bbox, zoom_min, zoom_max):
     global download_state
 
     region_dir = os.path.join(MAPS_ROOT, region_id)
@@ -567,16 +642,18 @@ def download_tiles_worker(region_id, name, tasks, bbox):
         })
 
     meta = load_meta()
+    meta = load_meta()
     meta[region_id] = {
         "name": name,
         "status": "downloading",
         "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "bbox": bbox,
+        "min_zoom": zoom_min,
+        "max_zoom": zoom_max,
         "tile_count": 0,
         "size_bytes": 0,
     }
     save_meta(meta)
-
     cancelled = False
 
     for z, x, y in tasks:
@@ -640,6 +717,134 @@ def download_tiles_worker(region_id, name, tasks, bbox):
         download_state["running"] = False
         download_state["message"] = "完了"
 
+def repair_tiles_worker(region_id, name, tasks):
+
+    global download_state
+
+    region_dir = os.path.join(MAPS_ROOT, region_id)
+
+    with maps_lock:
+        download_state.update({
+            "running": True,
+            "region_id": region_id,
+            "name": name + "(修復)",
+            "total": len(tasks),
+            "done": 0,
+            "skipped": 0,
+            "failed": 0,
+            "message": "欠けているタイルを再取得中",
+            "cancel_requested": False,
+        })
+
+    for z, x, y in tasks:
+
+        with maps_lock:
+            if download_state["cancel_requested"]:
+                break
+
+        tile_dir = os.path.join(region_dir, str(z), str(x))
+        tile_path = os.path.join(tile_dir, f"{y}.png")
+
+        success = False
+
+        for attempt in range(3):
+
+            try:
+                url = TILE_SERVER_URL.format(z=z, x=x, y=y)
+                response = requests.get(url, headers=TILE_REQUEST_HEADERS, timeout=10)
+
+                if response.status_code == 200:
+                    os.makedirs(tile_dir, exist_ok=True)
+                    with open(tile_path, "wb") as f:
+                        f.write(response.content)
+                    success = True
+                    break
+
+            except requests.RequestException as exc:
+                logger.error("タイル取得エラー: %s", exc)
+
+            time.sleep(1)
+
+        with maps_lock:
+            if not success:
+                download_state["failed"] += 1
+            download_state["done"] += 1
+
+        time.sleep(0.2)
+
+    size_bytes = get_dir_size(region_dir)
+    meta = load_meta()
+    if region_id in meta:
+        meta[region_id]["size_bytes"] = size_bytes
+        save_meta(meta)
+
+    with maps_lock:
+        download_state["running"] = False
+        download_state["message"] = "修復完了"
+
+
+@app.route("/maps/regions/<region_id>/repair", methods=["POST"])
+def maps_region_repair(region_id):
+
+    if not is_wired_connection():
+        return jsonify({"success": False, "message": "有線LAN接続時のみ実行できます"})
+
+    with maps_lock:
+        if download_state["running"]:
+            return jsonify({"success": False, "message": "既にダウンロード中です"})
+
+    meta = load_meta()
+
+    if region_id not in meta:
+        return jsonify({"success": False, "message": "リージョンが見つかりません"})
+
+    info = meta[region_id]
+    bbox = info["bbox"]
+    region_dir = os.path.join(MAPS_ROOT, region_id)
+
+    if not os.path.isdir(region_dir):
+        return jsonify({"success": False, "message": "フォルダが見つかりません"})
+
+    zoom_dirs = [
+        int(d) for d in os.listdir(region_dir) if d.isdigit()
+    ]
+
+    if not zoom_dirs:
+        return jsonify({"success": False, "message": "ズーム情報が見つかりません"})
+
+    min_zoom = min(zoom_dirs)
+    max_zoom = max(zoom_dirs)
+
+    tasks = build_tile_list(
+        bbox["south"], bbox["west"], bbox["north"], bbox["east"],
+        min_zoom, max_zoom
+    )
+
+    missing_tasks = []
+
+    for z, x, y in tasks:
+
+        tile_path = os.path.join(
+            region_dir, str(z), str(x), f"{y}.png"
+        )
+
+        if not os.path.isfile(tile_path):
+            missing_tasks.append((z, x, y))
+
+    if not missing_tasks:
+        return jsonify({
+            "success": True,
+            "message": "欠けているタイルはありません",
+            "total": 0
+        })
+
+    threading.Thread(
+        target=repair_tiles_worker,
+        args=(region_id, info["name"], missing_tasks),
+        daemon=True
+    ).start()
+
+    return jsonify({"success": True, "total": len(missing_tasks)})
 
 @app.route("/maps/download", methods=["POST"])
 def maps_download():
@@ -669,16 +874,17 @@ def maps_download():
     south, west = data["south"], data["west"]
     north, east = data["north"], data["east"]
 
-    tasks = build_tile_list(south, west, north, east, MIN_DOWNLOAD_ZOOM, MAX_DOWNLOAD_ZOOM)
+    max_zoom = data.get("max_zoom", MAX_DOWNLOAD_ZOOM)
+    min_zoom = data.get("min_zoom", MIN_DOWNLOAD_ZOOM)
 
+    tasks = build_tile_list(south, west, north, east, min_zoom, max_zoom)
     region_id = uuid.uuid4().hex[:12]
 
     threading.Thread(
         target=download_tiles_worker,
-        args=(region_id, name, tasks, {"south": south, "west": west, "north": north, "east": east}),
+        args=(region_id, name, tasks, {"south": south, "west": west, "north": north, "east": east}, min_zoom, max_zoom),
         daemon=True
     ).start()
-
     return jsonify({"success": True, "total": len(tasks), "region_id": region_id})
 
 
@@ -711,8 +917,10 @@ def maps_regions():
             "size_bytes": info.get("size_bytes", 0),
             "tile_count": info.get("tile_count", 0),
             "created_at": info.get("created_at", ""),
+            "bbox": info.get("bbox"),
+            "min_zoom": info.get("min_zoom"),
+            "max_zoom": info.get("max_zoom"),
         })
-
     total_bytes = get_total_maps_size()
 
     return jsonify({
@@ -987,6 +1195,7 @@ def download(requested_filename):
 @app.route("/network/status")
 def network_status():
     return jsonify({"wired": is_wired_connection()})
+
 
 # -------------------------------
 # 起動
