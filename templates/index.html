@@ -11,6 +11,31 @@
 <!-- Leaflet 地図 -->
 <link rel="stylesheet" href="{{ url_for('static', filename='leaflet/leaflet.css') }}">
 <script src="{{ url_for('static', filename='leaflet/leaflet.js') }}"></script>
+
+<style>
+    /* --------------------------------
+       地図上の表示
+       -------------------------------- */
+
+    /* 過去データ選択中の明示 */
+    .map-overlay-badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 500;
+
+        background: rgba(255, 153, 0, 0.9);
+        color: #fff;
+
+        padding: 6px 12px;
+        border-radius: 6px;
+
+        font-size: 13px;
+
+        display: none;
+    }
+</style>
+
 </head>
 
 <body>
@@ -20,12 +45,11 @@
     <h1>水温計測システム</h1>
 
 
-    <div class="card">
+    <!-- ================================
+         計測状態
+         ================================ -->
 
-        <div class="row">
-            <span class="label">現在時刻</span>
-            <span class="value" id="current-time">--</span>
-        </div>
+    <div class="card">
 
         <div class="row">
             <span class="label">計測状態</span>
@@ -40,6 +64,9 @@
     </div>
 
 
+    <!-- ================================
+         GPS
+         ================================ -->
 
     <div class="card">
 
@@ -63,76 +90,227 @@
     </div>
 
 
+    <!-- ================================
+         水温
+         ================================ -->
 
-    <!-- 地図追加 -->
+    <div class="card">
+
+        <div class="row temperature-row">
+            <span class="label">水温</span>
+
+            <span
+                class="value temperature-value"
+                id="temperature">
+                -- ℃
+            </span>
+        </div>
+
+    </div>
+
+
+    <!-- ================================
+         地図
+         ================================ -->
 
     <div class="card">
 
         <h2>地図</h2>
 
-        <div id="map"></div>
+        <div style="position:relative;">
+
+            <!-- Leaflet地図 -->
+            <div id="map"></div>
+
+            <!-- 地図範囲外表示用 -->
+            <div
+                id="map-out-of-coverage"
+                style="display:none;">
+            </div>
+
+            <!-- 過去データを表示している場合に地図左上へ表示 -->
+            <div
+                class="map-overlay-badge"
+                id="file-status-badge">
+            </div>
+
+        </div>
+
+
+        <!-- ============================
+             地図に表示するデータ
+             ============================ -->
+
+        <div style="margin-top: 12px;">
+
+            <select
+                id="file-select"
+                class="file-select">
+            </select>
+
+        </div>
+
+
+        <!-- 保存ボタン -->
+
+        <div style="margin-top: 10px;">
+
+            <button
+                id="save-btn"
+                class="btn save"
+                disabled>
+                保存
+            </button>
+
+        </div>
 
     </div>
 
 
+    <!-- ================================
+         オフライン地図
+         有線LAN接続時のみ表示
+         ================================ -->
 
-    <!-- 有線LAN接続時のみ表示される地図データカード -->
-    <div class="card" id="map-download-card" style="display:none;">
+    <div
+        class="card"
+        id="map-download-card"
+        style="display:none;">
+
         <h2>地図データ</h2>
+
         <div class="row">
+
             <span class="label">状態</span>
-            <span class="value" id="map-download-message">待機中</span>
+
+            <span
+                class="value"
+                id="map-download-message">
+                待機中
+            </span>
+
         </div>
+
         <div class="row">
+
             <span class="label">進捗</span>
-            <span class="value" id="map-download-progress">--</span>
+
+            <span
+                class="value"
+                id="map-download-progress">
+                --
+            </span>
+
         </div>
+
         <div class="row">
+
             <span class="label">合計容量</span>
-            <span class="value" id="map-total-size">--</span>
+
+            <span
+                class="value"
+                id="map-total-size">
+                --
+            </span>
+
         </div>
+
+
+        <!-- 地図名 -->
+
         <input
             type="text"
             id="map-name-input"
             class="file-select"
             placeholder="地図の名前(例: 〇〇池)">
-        <div class="button-card" style="margin-top:10px;">
-            <button id="map-download-btn" class="btn save">保存</button>
-            <button id="map-cancel-btn" class="btn stop" disabled>キャンセル</button>
-        </div>
-        <div id="map-region-list" style="margin-top:14px;"></div>
-    </div>
 
 
-    <div class="card">
+        <!-- ズーム選択 -->
 
-        <h2>水温</h2>
+        <select
+            id="map-zoom-select"
+            class="file-select"
+            style="margin-top:10px;">
+
+            <option value="17">
+                広い範囲向け(ズーム17まで・街区レベル)
+            </option>
+
+            <option value="18">
+                狭い範囲向け(ズーム18まで・桟橋レベル)
+            </option>
+
+        </select>
+
+
+        <!-- ダウンロード操作 -->
 
         <div
-            class="temperature-display"
-            id="temperature">
-            -- ℃
+            class="button-card"
+            style="margin-top:10px;">
+
+            <button
+                id="map-download-btn"
+                class="btn save">
+                保存
+            </button>
+
+            <button
+                id="map-cancel-btn"
+                class="btn stop"
+                disabled>
+                キャンセル
+            </button>
+
+        </div>
+
+
+        <!-- 保存済み地図一覧 -->
+
+        <div
+            id="map-region-list"
+            style="margin-top:14px;">
         </div>
 
     </div>
 
 
+    <!-- ================================
+         記録情報
+         ================================ -->
 
     <div class="card">
 
         <div class="row">
+
             <span class="label">取得件数</span>
-            <span class="value" id="records">--</span>
+
+            <span
+                class="value"
+                id="records">
+                --
+            </span>
+
         </div>
 
         <div class="row">
+
             <span class="label">保存ファイル名</span>
-            <span class="value" id="filename">--</span>
+
+            <span
+                class="value"
+                id="filename">
+                --
+            </span>
+
         </div>
 
     </div>
 
 
+    <!-- ================================
+         計測開始・終了
+         ================================ -->
 
     <div class="card button-card">
 
@@ -141,7 +319,6 @@
             class="btn start">
             開始
         </button>
-
 
         <button
             id="stop-btn"
@@ -152,33 +329,13 @@
     </div>
 
 
+    <!-- ================================
+         通信状態
+         ================================ -->
 
     <div class="card">
 
-        <h2>記録ファイル</h2>
-
-
-        <select
-            id="file-select"
-            class="file-select">
-        </select>
-
-
-        <button
-            id="save-btn"
-            class="btn save">
-            保存
-        </button>
-
-    </div>
-
-
-
-    <div class="card">
-
-        <span class="label">
-            通信状態
-        </span>
+        <span class="label">通信状態</span>
 
         <span
             class="value"
@@ -188,13 +345,12 @@
 
     </div>
 
-
 </div>
 
 
+<!-- JavaScript -->
+
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 
-
 </body>
-
 </html>
