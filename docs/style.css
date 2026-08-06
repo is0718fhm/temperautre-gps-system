@@ -186,16 +186,13 @@ figure img{
 
 }
 
-.image-group img{
+.qr-group img{
 
     width:120px;
-
     max-width:120px;
-
     height:auto;
 
 }
-
 figcaption{
 
     margin-top:10px;
