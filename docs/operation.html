@@ -45,14 +45,16 @@
 
 <li>モバイルバッテリーとRaspberry Piを接続する</li>
 
-<li>キットを密封する</li>
+
   
 <li>スマートフォンをWi-Fiへ接続する</li>
 
 <li>Webアプリケーションを開く</li>
 
 <li>GPSの受信を確認する</li>
-
+  
+<li>キットを密封する</li>
+  
 <li>計測を開始する</li>
 
 <li>計測を終了し、ファイルを選択してデータを保存する</li>
@@ -73,7 +75,10 @@
   
 接続後、自動でシステムが起動します。
 
-起動完了まで約1分お待ちください。
+起動が完了するまで約1分お待ちください。
+
+起動中はRaspberry PiのLEDが状態を示します。
+赤色LEDが点灯していることを確認し、緑色LEDの点滅が終了したことを起動完了の目安としてください。
 
 </p>
 
@@ -87,21 +92,49 @@
 
 </figure>
 
-
-
 </div>
 
 </section>
 
+<section>
 
+<h2>② GPS測位を確認する</h2>
+
+<p>
+
+Web画面に「GPS取得済み」と表示されることを確認してください。
+
+電源接続後の初回測位には、数分かかる場合があります。
+
+GPS取得前に計測を開始すると、正しい位置情報が記録されない場合があります。
+
+GPSは防水ケースの蓋を閉じた状態でも受信できますが、電源接続後の初回測位は蓋を開けた状態の方が、よりスムーズに行える場合があります。
+
+</p>
+
+<figure>
+
+<img src="images/gps_fix.png" alt="GPS取得">
+
+<figcaption>
+
+図2　GPS取得状態
+
+</figcaption>
+
+</figure>
+
+</section>
 
 <section>
 
-<h2>② キットを密封する</h2>
+<h2>③ キットを密封する</h2>
 
 <p>
 
 防水ケースのフタを閉じます。パッキン(青四角)をしっかりと締め切ってください。
+
+また、防水グランドに緩みがある場合は、十分に締め付けてください。
 
 </p>
 
@@ -111,28 +144,37 @@
 
 <figcaption>
 
-図4　防水ケースのフタを閉じる
+図3　防水ケースのフタを閉じる
 
 </figcaption>
 
 </figure>
 
+<figure>
+
+<img src="images/setup2.png" alt="設置">
+
+<figcaption>図4　防水グランドを締める</figcaption>
+
+</figure>
+  
 </section>
 
-
-
+  
 <section>
 
-<h2>③ スマートフォンをWi-Fiへ接続する</h2>
+<h2>④スマートフォンをWi-Fiへ接続する</h2>
 
 <p>
 
 スマートフォンのWi-Fi設定から、使用するキットのアクセスポイントへ接続してください。
-(図5はiPhone10の画面であり、機種によってWi-Fi設定方法・画面は異なります)
-①設定よりWi-Fiの選択画面を開き、各キットに対応したアクセスポイントを選択します。
-②下記にあるパスワードを入力します。
-③接続完了です。
 
+図5はiPhone 10の画面です。機種によってWi-Fi設定画面や操作方法は異なる場合があります。
+
+① 「設定」からWi-Fi設定画面を開きます。<br>
+② 使用するキットに対応したアクセスポイントを選択します。<br>
+③ 下記のパスワードを入力して接続します。<br>
+④ 接続が完了したことを確認してください。
 </p>
 
 <table>
@@ -185,7 +227,7 @@
 
 <figcaption>
 
-図5　Wi-Fi接続画面
+図5  Wi-Fi接続画面
 
 </figcaption>
 
@@ -197,7 +239,7 @@
 
 <section>
 
-<h2>④ Webページを開く</h2>
+<h2>⑤ Webページを開く</h2>
 
 <p>
 
@@ -211,20 +253,9 @@ http://192.168.18.1:5000/
 
 </code>
 
-<code>
-
-http://raspberrypi.local:5000
-
-</code>
-
-<code>
-
-http://raspberrypi.local:5000
-
-</code>
 <p>
 
-各キットのQRコードからもアクセス可能です。
+以下のQRコードからもアクセス可能です。
 
 </p>
 
@@ -238,57 +269,9 @@ http://raspberrypi.local:5000
 
 </figure>
 
-<figure>
-
-<img src="images/qr2.png" alt="QR2">
-
-<figcaption>キット2</figcaption>
-
-</figure>
-
-<figure>
-
-<img src="images/qr3.png" alt="QR3">
-
-<figcaption>キット3</figcaption>
-
-</figure>
-
 </div>
 
 </section>
-
-
-
-<section>
-
-<h2>⑤ GPS測位を確認する</h2>
-
-<p>
-
-Web画面に「GPS取得済み」と表示されることを確認してください。
-
-初回起動時は測位まで数分かかる場合があります。
-
-GPS取得前に計測を開始すると、正しい位置情報が記録されない場合があります。
-
-</p>
-
-<figure>
-
-<img src="images/gps_fix.png" alt="GPS取得">
-
-<figcaption>
-
-図6　GPS取得状態
-
-</figcaption>
-
-</figure>
-
-</section>
-
-
 
 <section>
 
@@ -308,7 +291,7 @@ GPS取得後、「計測開始」ボタンを押してください。
 
 <figcaption>
 
-図7　計測開始ボタン
+図6　計測開始ボタン
 
 </figcaption>
 
