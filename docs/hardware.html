@@ -231,6 +231,532 @@ USBケーブルで Raspberry Pi に接続して使用します。残量が少な
 
 <section>
 
+<h2>配線</h2>
+
+<div class="warning-box">
+
+<h3>この節を読む前に</h3>
+
+<p>
+
+配線の確認や組み立ては、システムの管理者が行ってください。
+通常の計測では配線に触れる必要はありません。
+
+</p>
+
+<p>
+
+<strong>配線作業は必ず電源を切った状態で行ってください。</strong>
+通電したままケーブルを抜き差しすると、Raspberry Pi やセンサが故障する原因になります。
+
+</p>
+
+</div>
+
+
+<h3>接続一覧</h3>
+
+<p>
+
+Raspberry Pi の GPIO ヘッダと各センサの接続は下表のとおりです。
+ピン番号は GPIO ヘッダの物理ピン番号（基板上の並び順）を示します。
+
+</p>
+
+<table>
+
+<tr>
+
+<th>接続先</th>
+
+<th>信号</th>
+
+<th>ピン番号</th>
+
+<th>GPIO名</th>
+
+<th>線の色</th>
+
+</tr>
+
+<tr>
+
+<td rowspan="3">DS18B20<br>水温センサ</td>
+
+<td>電源</td>
+
+<td>1番</td>
+
+<td>3.3V</td>
+
+<td>赤</td>
+
+</tr>
+
+<tr>
+
+<td>データ</td>
+
+<td>5番</td>
+
+<td>GPIO3</td>
+
+<td>黄</td>
+
+</tr>
+
+<tr>
+
+<td>グランド</td>
+
+<td>39番</td>
+
+<td>GND</td>
+
+<td>黒</td>
+
+</tr>
+
+<tr>
+
+<td rowspan="5">GPSモジュール<br>GT-502MGG-N</td>
+
+<td>電源</td>
+
+<td>4番</td>
+
+<td>5V</td>
+
+<td>赤</td>
+
+</tr>
+
+<tr>
+
+<td>グランド</td>
+
+<td>6番</td>
+
+<td>GND</td>
+
+<td>黒</td>
+
+</tr>
+
+<tr>
+
+<td>GPSの受信（RXD）</td>
+
+<td>8番</td>
+
+<td>GPIO14 / TXD</td>
+
+<td>緑</td>
+
+</tr>
+
+<tr>
+
+<td>GPSの送信（TXD）</td>
+
+<td>10番</td>
+
+<td>GPIO15 / RXD</td>
+
+<td>橙</td>
+
+</tr>
+
+<tr>
+
+<td>秒パルス（PPS）</td>
+
+<td>12番</td>
+
+<td>GPIO18</td>
+
+<td>茶</td>
+
+</tr>
+
+</table>
+
+<p>
+
+上表に記載のないピンは使用していません。
+
+</p>
+
+
+<h3>水温センサの配線</h3>
+
+<p>
+
+DS18B20 は 1-Wire という方式で接続します。
+データ線と電源（3.3V）の間に <strong>4.7kΩ のプルアップ抵抗</strong>が必要です。
+この抵抗がないと、水温が正しく読み取れません。
+
+</p>
+
+<figure>
+
+<div style="overflow-x:auto;">
+
+<svg viewBox="0 0 640 400" role="img" aria-labelledby="wiring-temp-title"
+     style="width:100%; min-width:620px; height:auto; background:#ffffff; border:1px solid #ccc; border-radius:10px;"
+     font-family="'Yu Gothic','Meiryo',sans-serif">
+
+<title id="wiring-temp-title">DS18B20水温センサとRaspberry Pi GPIOヘッダの配線図</title>
+
+<!-- 配線 -->
+<path d="M388,70 H225 V250 H195" fill="none" stroke="#e53935" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M388,158 H275 V285 H195" fill="none" stroke="#f9a825" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M388,310 H310 V320 H195" fill="none" stroke="#212121" stroke-width="3.5" stroke-linejoin="round"/>
+
+<!-- プルアップ抵抗 -->
+<line x1="225" y1="200" x2="275" y2="200" stroke="#555555" stroke-width="3"/>
+<circle cx="225" cy="200" r="4.5" fill="#e53935"/>
+<circle cx="275" cy="200" r="4.5" fill="#f9a825"/>
+<rect x="232" y="191" width="36" height="18" rx="2" fill="#ffffff" stroke="#333333" stroke-width="2"/>
+<text x="253" y="183" text-anchor="middle" font-size="12" font-weight="bold" fill="#c62828">4.7kΩ</text>
+
+<!-- DS18B20 -->
+<rect x="10" y="262" width="25" height="16" rx="4" fill="#b0bec5" stroke="#78909c" stroke-width="2"/>
+<rect x="35" y="190" width="160" height="160" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2"/>
+<text x="115" y="212" text-anchor="middle" font-size="15" font-weight="bold" fill="#37474f">DS18B20</text>
+<text x="115" y="231" text-anchor="middle" font-size="12" fill="#546e7a">水温センサ</text>
+<text x="188" y="246" text-anchor="end" font-size="12" fill="#c62828">赤　VDD</text>
+<text x="188" y="281" text-anchor="end" font-size="12" fill="#f57f17">黄　DATA</text>
+<text x="188" y="316" text-anchor="end" font-size="12" fill="#212121">黒　GND</text>
+
+<!-- GPIOヘッダ -->
+<text x="442" y="28" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">Raspberry Pi GPIOヘッダ</text>
+<rect x="375" y="40" width="135" height="295" rx="8" fill="#2e7d32"/>
+
+<circle cx="401" cy="70" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="401" y="75" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">1</text>
+<text x="420" y="75" font-size="12" fill="#ffffff">3.3V</text>
+<circle cx="484" cy="70" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="75" text-anchor="middle" font-size="13" fill="#333333">2</text>
+
+<circle cx="401" cy="114" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="401" y="119" text-anchor="middle" font-size="13" fill="#333333">3</text>
+<circle cx="484" cy="114" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="119" text-anchor="middle" font-size="13" fill="#333333">4</text>
+
+<circle cx="401" cy="158" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="401" y="163" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">5</text>
+<text x="420" y="163" font-size="12" fill="#ffffff">GPIO3</text>
+<circle cx="484" cy="158" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="163" text-anchor="middle" font-size="13" fill="#333333">6</text>
+
+<circle cx="401" cy="202" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="401" y="207" text-anchor="middle" font-size="13" fill="#333333">7</text>
+<circle cx="484" cy="202" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="207" text-anchor="middle" font-size="13" fill="#333333">8</text>
+
+<circle cx="401" cy="246" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="401" y="251" text-anchor="middle" font-size="13" fill="#333333">9</text>
+<circle cx="484" cy="246" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="251" text-anchor="middle" font-size="13" fill="#333333">10</text>
+
+<!-- 中略（11〜38番ピン） -->
+<circle cx="401" cy="270" r="2.5" fill="#a5d6a7"/>
+<circle cx="401" cy="278" r="2.5" fill="#a5d6a7"/>
+<circle cx="401" cy="286" r="2.5" fill="#a5d6a7"/>
+<circle cx="484" cy="270" r="2.5" fill="#a5d6a7"/>
+<circle cx="484" cy="278" r="2.5" fill="#a5d6a7"/>
+<circle cx="484" cy="286" r="2.5" fill="#a5d6a7"/>
+
+<circle cx="401" cy="310" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="401" y="315" text-anchor="middle" font-size="12" font-weight="bold" fill="#3e2723">39</text>
+<text x="420" y="315" font-size="12" fill="#ffffff">GND</text>
+<circle cx="484" cy="310" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="484" y="315" text-anchor="middle" font-size="12" fill="#333333">40</text>
+
+<text x="442" y="357" text-anchor="middle" font-size="12" fill="#666666">11〜38番ピンは未使用</text>
+
+<!-- 凡例 -->
+<rect x="35" y="374" width="16" height="11" fill="#e53935"/>
+<text x="57" y="384" font-size="12" fill="#555555">3.3V（電源）</text>
+<rect x="150" y="374" width="16" height="11" fill="#f9a825"/>
+<text x="172" y="384" font-size="12" fill="#555555">データ</text>
+<rect x="235" y="374" width="16" height="11" fill="#212121"/>
+<text x="257" y="384" font-size="12" fill="#555555">GND（グランド）</text>
+
+</svg>
+
+</div>
+
+<figcaption>
+
+図3　DS18B20水温センサの配線
+
+</figcaption>
+
+</figure>
+
+
+<h3>GPSモジュールの配線</h3>
+
+<p>
+
+GPSモジュールは UART というシリアル通信で接続します。
+<strong>送信と受信を入れ違いに接続する</strong>点に注意してください。
+Raspberry Pi の送信（TXD・8番ピン）はGPSの受信（RXD・緑線）へ、
+Raspberry Pi の受信（RXD・10番ピン）はGPSの送信（TXD・橙線）へつなぎます。
+
+</p>
+
+<p>
+
+電源は 5V（4番ピン）から供給します。水温センサは 3.3V なので、
+配線時に取り違えないよう注意してください。
+また、GPSモジュールの PPS 出力（茶線）を 12番ピンへ接続しています。
+
+</p>
+
+<p>
+
+GPSモジュールから出ている5本の線は、データシートで次のように定められています。
+
+</p>
+
+<table>
+
+<tr>
+
+<th>線の色</th>
+
+<th>信号名</th>
+
+<th>内容</th>
+
+<th>接続先</th>
+
+</tr>
+
+<tr>
+
+<td>赤</td>
+
+<td>VCC</td>
+
+<td>電源（3.0〜5.5V）</td>
+
+<td>4番ピン（5V）</td>
+
+</tr>
+
+<tr>
+
+<td>黒</td>
+
+<td>GND</td>
+
+<td>グランド</td>
+
+<td>6番ピン（GND）</td>
+
+</tr>
+
+<tr>
+
+<td>橙</td>
+
+<td>TXD</td>
+
+<td>GPSからの送信</td>
+
+<td>10番ピン（RXD）</td>
+
+</tr>
+
+<tr>
+
+<td>緑</td>
+
+<td>RXD</td>
+
+<td>GPSへの受信</td>
+
+<td>8番ピン（TXD）</td>
+
+</tr>
+
+<tr>
+
+<td>茶</td>
+
+<td>PPS</td>
+
+<td>秒パルス出力</td>
+
+<td>12番ピン（GPIO18）</td>
+
+</tr>
+
+</table>
+
+<figure>
+
+<div style="overflow-x:auto;">
+
+<svg viewBox="0 0 720 410" role="img" aria-labelledby="wiring-gps-title"
+     style="width:100%; min-width:700px; height:auto; background:#ffffff; border:1px solid #ccc; border-radius:10px;"
+     font-family="'Yu Gothic','Meiryo',sans-serif">
+
+<title id="wiring-gps-title">GPSモジュールとRaspberry Pi GPIOヘッダの配線図</title>
+
+<!-- 配線 -->
+<path d="M407,119 H540 V185 H560" fill="none" stroke="#e53935" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M407,163 H520 V220 H560" fill="none" stroke="#212121" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M407,207 H500 V255 H560" fill="none" stroke="#2e7d32" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M407,251 H480 V290 H560" fill="none" stroke="#ef6c00" stroke-width="3.5" stroke-linejoin="round"/>
+<path d="M407,295 H460 V325 H560" fill="none" stroke="#6d4c41" stroke-width="3.5" stroke-linejoin="round"/>
+
+<!-- 通信方向の矢印 -->
+<polygon points="521,249 535,255 521,261" fill="#2e7d32"/>
+<polygon points="539,284 525,290 539,296" fill="#ef6c00"/>
+<polygon points="524,319 510,325 524,331" fill="#6d4c41"/>
+
+<!-- GPIOヘッダ -->
+<rect x="285" y="45" width="135" height="275" rx="8" fill="#2e7d32"/>
+
+<circle cx="311" cy="75" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="80" text-anchor="middle" font-size="13" fill="#333333">1</text>
+<circle cx="394" cy="75" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="394" y="80" text-anchor="middle" font-size="13" fill="#333333">2</text>
+
+<circle cx="311" cy="119" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="124" text-anchor="middle" font-size="13" fill="#333333">3</text>
+<text x="378" y="124" text-anchor="end" font-size="12" fill="#ffffff">5V</text>
+<circle cx="394" cy="119" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="394" y="124" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">4</text>
+
+<circle cx="311" cy="163" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="168" text-anchor="middle" font-size="13" fill="#333333">5</text>
+<text x="378" y="168" text-anchor="end" font-size="12" fill="#ffffff">GND</text>
+<circle cx="394" cy="163" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="394" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">6</text>
+
+<circle cx="311" cy="207" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="212" text-anchor="middle" font-size="13" fill="#333333">7</text>
+<text x="378" y="212" text-anchor="end" font-size="12" fill="#ffffff">TXD</text>
+<circle cx="394" cy="207" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="394" y="212" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">8</text>
+
+<circle cx="311" cy="251" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="256" text-anchor="middle" font-size="13" fill="#333333">9</text>
+<text x="378" y="256" text-anchor="end" font-size="12" fill="#ffffff">RXD</text>
+<circle cx="394" cy="251" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="394" y="256" text-anchor="middle" font-size="13" font-weight="bold" fill="#3e2723">10</text>
+
+<circle cx="311" cy="295" r="13" fill="#a5a5a5" stroke="#6d6d6d" stroke-width="2"/>
+<text x="311" y="300" text-anchor="middle" font-size="12" fill="#333333">11</text>
+<text x="378" y="300" text-anchor="end" font-size="12" fill="#ffffff">GPIO18</text>
+<circle cx="394" cy="295" r="13" fill="#ffca28" stroke="#8d6e00" stroke-width="2"/>
+<text x="394" y="300" text-anchor="middle" font-size="12" font-weight="bold" fill="#3e2723">12</text>
+
+<text x="352" y="342" text-anchor="middle" font-size="15" font-weight="bold" fill="#333333">Raspberry Pi GPIOヘッダ</text>
+<text x="352" y="363" text-anchor="middle" font-size="12" fill="#666666">13〜40番ピンは未使用</text>
+
+<!-- GPSモジュール -->
+<rect x="560" y="105" width="145" height="245" rx="10" fill="#eceff1" stroke="#607d8b" stroke-width="2"/>
+<text x="632" y="130" text-anchor="middle" font-size="15" font-weight="bold" fill="#37474f">GPSモジュール</text>
+<text x="632" y="149" text-anchor="middle" font-size="12" fill="#546e7a">GT-502MGG-N</text>
+<text x="572" y="190" font-size="12" fill="#c62828">赤　VCC</text>
+<text x="572" y="225" font-size="12" fill="#212121">黒　GND</text>
+<text x="572" y="260" font-size="12" fill="#2e7d32">緑　RXD</text>
+<text x="572" y="295" font-size="12" fill="#ef6c00">橙　TXD</text>
+<text x="572" y="330" font-size="12" fill="#6d4c41">茶　PPS</text>
+
+<!-- 凡例 -->
+<rect x="20" y="384" width="16" height="11" fill="#e53935"/>
+<text x="42" y="393" font-size="12" fill="#555555">赤：5V（電源）</text>
+<rect x="140" y="384" width="16" height="11" fill="#212121"/>
+<text x="162" y="393" font-size="12" fill="#555555">黒：GND</text>
+<rect x="238" y="384" width="16" height="11" fill="#2e7d32"/>
+<text x="260" y="393" font-size="12" fill="#555555">緑：Pi → GPS</text>
+<rect x="368" y="384" width="16" height="11" fill="#ef6c00"/>
+<text x="390" y="393" font-size="12" fill="#555555">橙：GPS → Pi</text>
+<rect x="498" y="384" width="16" height="11" fill="#6d4c41"/>
+<text x="520" y="393" font-size="12" fill="#555555">茶：PPS（秒パルス）</text>
+
+</svg>
+
+</div>
+
+<figcaption>
+
+図4　GPSモジュールの配線
+
+</figcaption>
+
+</figure>
+
+
+<h3>PPS（秒パルス）とは</h3>
+
+<p>
+
+PPS は Pulse Per Second（毎秒1回のパルス）の略で、
+GPSモジュールが「ちょうど1秒の変わり目」に合わせて出す電気信号です。
+1秒に1回、短い電圧の立ち上がりが出力されます。
+位置情報とは無関係で、<strong>正確な時刻の基準</strong>として使われます。
+
+</p>
+
+<p>
+
+GPSの時刻情報は通常、位置情報と同じ通信線（TX・RX）を通って文字データとして送られてきます。
+しかしこの方法では、データが送られて処理されるまでの間に
+数十ミリ秒から数百ミリ秒程度のずれが生じます。
+PPS はこのずれを避けるための仕組みで、
+時刻の変わり目そのものを1本の信号線で直接伝えます。
+本システムで使用している GT-502MGG のデータシートによれば、
+このパルス自体の精度は 30 ナノ秒（1億分の3秒）です。
+文字データを解析する方法とは、精度が数万倍違います。
+
+</p>
+
+<p>
+
+本システムでは、GPSモジュールの PPS 出力を Raspberry Pi の 12番ピン（GPIO18）へ接続しています。
+Raspberry Pi は時計用の電池を持たず、計測中はインターネットにも接続しないため、
+電源を入れ直すたびに内部時計がずれます。
+CSVに記録される計測時刻はこの内部時計を使うため、
+GPSから得られる正確な時刻で補正する必要があります。
+PPS はそのための配線です。
+
+</p>
+
+<p>
+
+なお、この配線を利用するには Raspberry Pi 側の設定が必要です。
+配線を追加しただけでは時刻補正の精度は変わりません。
+
+</p>
+
+
+<h3>ピン番号の数え方</h3>
+
+<p>
+
+GPIO ヘッダは 2 列 20 段の合計 40 本のピンで構成されています。
+1番ピンは基板の端にあり、そのピンだけ四角いはんだ面になっています。
+1番ピンから見て、同じ列が奇数番（1・3・5…）、隣の列が偶数番（2・4・6…）です。
+<strong>数え間違えると故障の原因になります。</strong>
+作業前に必ず基板上の刻印で1番ピンの位置を確認してください。
+
+</p>
+
+</section>
+
+
+
+<section>
+
 <h2>使用前チェック</h2>
 
 <table>
